@@ -1,33 +1,41 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>مُدار بلس — الراتب، المصروفات، والخطة الادخارية</title>
-<meta name="theme-color" content="#0F6E56">
+<meta name="theme-color" content="#14171C">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="مُدار بلس">
 <meta name="application-name" content="مُدار بلس">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap">
 <link id="manifestLink" rel="manifest">
 <link id="appleIconLink" rel="apple-touch-icon">
 <link id="faviconLink" rel="icon" type="image/svg+xml">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Tahoma,sans-serif;background:#F5F6FA;color:#1a1a2e;direction:rtl;min-height:100vh}
+body{font-family:'Tajawal',-apple-system,BlinkMacSystemFont,'Segoe UI',Tahoma,sans-serif;background:#F5F6FA;color:#1a1a2e;direction:rtl;min-height:100vh}
 .app{max-width:440px;margin:0 auto;padding:0 0 40px}
 
 /* Header */
-.header{background:linear-gradient(135deg,#1D9E75 0%,#0F6E56 100%);padding:28px 20px 24px;text-align:center;color:#fff}
-.header h1{font-size:22px;font-weight:600}
-.header p{font-size:13px;opacity:.84;margin-top:5px}
+.header{position:relative;overflow:hidden;background:linear-gradient(150deg,#0A0C10 0%,#14171C 55%,#1B1F26 100%);padding:32px 20px 26px;text-align:center;color:#fff}
+.header::before{content:'';position:absolute;top:-70px;right:-60px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle, rgba(212,175,55,.38), rgba(212,175,55,0) 70%);pointer-events:none}
+.header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,#8a6a1f,#D4AF37 30%,#F2D675 50%,#D4AF37 70%,#8a6a1f)}
+.header h1,.header p{position:relative;z-index:1}
+.header h1{font-size:23px;font-weight:900;letter-spacing:.2px}
+.header p{font-size:13px;color:#C9CDD6;opacity:.92;margin-top:6px;font-weight:500}
 
 /* Tabs */
-.tabs{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:#fff;border-bottom:1px solid #E8EAF0;position:sticky;top:0;z-index:100}
+.tabs{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:#fff;border-bottom:1px solid #E8EAF0;box-shadow:0 2px 6px rgba(20,23,28,.06);position:sticky;top:0;z-index:100}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:0 0 auto;min-width:68px;padding:13px 9px 11px;text-align:center;font-size:10px;color:#888;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;user-select:none;white-space:nowrap}
-.plus-badge{display:inline-block;background:rgba(255,255,255,.22);border-radius:99px;padding:2px 9px;font-size:11px;font-weight:800;margin-right:6px;vertical-align:1px;letter-spacing:.5px}
+.plus-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#F2D675,#D4AF37);color:#14171C;border-radius:99px;padding:3px 10px 3px 8px;font-size:11px;font-weight:800;margin-right:8px;vertical-align:2px;letter-spacing:.6px;box-shadow:0 2px 8px rgba(212,175,55,.4)}
+.plus-badge i{font-size:12px}
 .tab i{display:block;font-size:21px;margin-bottom:3px}
 .tab.active{color:#1D9E75;border-bottom-color:#1D9E75;font-weight:600}
 
@@ -128,7 +136,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Tahoma,sans-serif;b
 .welcome-overlay{display:none;position:fixed;inset:0;background:rgba(26,26,46,.58);z-index:260;align-items:center;justify-content:center;padding:18px}
 .welcome-overlay.open{display:flex}
 .welcome-card{width:100%;max-width:390px;background:#fff;border-radius:22px;padding:24px 20px 20px;text-align:center;box-shadow:0 18px 46px rgba(0,0,0,.18)}
-.welcome-icon{width:70px;height:70px;margin:0 auto 13px;border-radius:22px;background:linear-gradient(135deg,#1D9E75,#1565C0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;box-shadow:0 12px 24px rgba(29,158,117,.22)}
+.welcome-icon{width:70px;height:70px;margin:0 auto 13px;border-radius:22px;background:linear-gradient(150deg,#1B1F26,#0A0C10);border:2px solid #D4AF37;display:flex;align-items:center;justify-content:center;color:#F2D675;font-size:36px;box-shadow:0 12px 24px rgba(0,0,0,.28)}
 .welcome-card h2{font-size:28px;color:#0F6E56;margin-bottom:6px}
 .welcome-card p{font-size:14px;color:#666;line-height:1.9;margin-bottom:14px}
 .welcome-points{display:grid;gap:8px;margin:14px 0;text-align:right}
@@ -156,7 +164,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Tahoma,sans-serif;b
 .delta.good{background:#E8F8F3;color:#0F6E56}
 .delta.bad{background:#FDECEA;color:#C0392B}
 .more-logo{text-align:center;padding:8px 0 18px}
-.more-logo-icon{width:58px;height:58px;border-radius:18px;margin:0 auto 10px;background:linear-gradient(135deg,#1D9E75,#1565C0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;box-shadow:0 10px 22px rgba(29,158,117,.22)}
+.more-logo-icon{width:58px;height:58px;border-radius:18px;margin:0 auto 10px;background:linear-gradient(150deg,#1B1F26,#0A0C10);border:2px solid #D4AF37;display:flex;align-items:center;justify-content:center;color:#F2D675;font-size:30px;box-shadow:0 10px 22px rgba(0,0,0,.25)}
 .more-app-name{font-size:22px;font-weight:800;color:#0F6E56}
 .more-tagline{font-size:12.5px;color:#888;margin-top:4px}
 .more-version{display:inline-block;margin-top:8px;font-size:11px;color:#666;background:#F5F6FA;border:1px solid #E8EAF0;border-radius:99px;padding:4px 11px}
@@ -174,17 +182,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Tahoma,sans-serif;b
 .theme-btn{height:46px;border:2px solid #E8EAF0;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;font-weight:700;color:#555}
 .theme-btn span{display:inline-block;width:13px;height:13px;border-radius:50%;margin-left:5px;vertical-align:-2px}
 .theme-btn.active{border-color:#1D9E75;background:#F0FBF7}
-.theme-blue .header{background:linear-gradient(135deg,#1565C0 0%,#0B3D91 100%)}
+.theme-blue .header::before{background:radial-gradient(circle, rgba(21,101,192,.45), rgba(21,101,192,0) 70%)}
 .theme-blue .tab.active,.theme-blue .card-title i,.theme-blue .contact-row i,.theme-blue .more-app-name{color:#1565C0}
 .theme-blue .tab.active{border-bottom-color:#1565C0}
 .theme-blue .primary-btn,.theme-blue .save-btn{background:#1565C0}
 .theme-blue .field input:focus,.theme-blue .field textarea:focus,.theme-blue .type-btn.sel{border-color:#1565C0}
-.theme-purple .header{background:linear-gradient(135deg,#7B2CBF 0%,#3C096C 100%)}
+.theme-purple .header::before{background:radial-gradient(circle, rgba(123,44,191,.45), rgba(123,44,191,0) 70%)}
 .theme-purple .tab.active,.theme-purple .card-title i,.theme-purple .contact-row i,.theme-purple .more-app-name{color:#7B2CBF}
 .theme-purple .tab.active{border-bottom-color:#7B2CBF}
 .theme-purple .primary-btn,.theme-purple .save-btn{background:#7B2CBF}
 .theme-purple .field input:focus,.theme-purple .field textarea:focus,.theme-purple .type-btn.sel{border-color:#7B2CBF}
-.theme-gold .header{background:linear-gradient(135deg,#C88719 0%,#7A4D00 100%)}
+.theme-gold .header::before{background:radial-gradient(circle, rgba(200,135,25,.5), rgba(200,135,25,0) 70%)}
 .theme-gold .tab.active,.theme-gold .card-title i,.theme-gold .contact-row i,.theme-gold .more-app-name{color:#C88719}
 .theme-gold .tab.active{border-bottom-color:#C88719}
 .theme-gold .primary-btn,.theme-gold .save-btn{background:#C88719}
@@ -205,7 +213,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Tahoma,sans-serif;b
 
 <div class="app">
   <div class="header">
-    <h1><span class="plus-badge">PLUS</span>مُدار بلس</h1>
+    <h1><span class="plus-badge"><i class="ti ti-sparkles"></i>PLUS</span>مُدار بلس</h1>
     <p>يدير المستخدم أمواله، يتابع صرفه، ويوزّع فائضه على خطة ادخارية شهرية</p>
   </div>
 
@@ -547,22 +555,26 @@ const APP_ICON_SVG = `
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <defs>
     <linearGradient id="bg" x1="70" y1="40" x2="440" y2="470" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#1D9E75"/>
-      <stop offset="1" stop-color="#1565C0"/>
+      <stop stop-color="#1B1F26"/>
+      <stop offset="1" stop-color="#0A0C10"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="120" y1="130" x2="392" y2="382" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F2D675"/>
+      <stop offset="1" stop-color="#C9A227"/>
     </linearGradient>
     <filter id="shadow" x="70" y="86" width="372" height="320" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#0B3D36" flood-opacity=".28"/>
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity=".38"/>
     </filter>
   </defs>
   <rect width="512" height="512" rx="118" fill="url(#bg)"/>
-  <circle cx="398" cy="104" r="72" fill="#ffffff" opacity=".12"/>
-  <circle cx="100" cy="408" r="92" fill="#ffffff" opacity=".10"/>
+  <circle cx="398" cy="104" r="90" fill="url(#gold)" opacity=".16"/>
+  <circle cx="90" cy="418" r="70" fill="url(#gold)" opacity=".10"/>
   <g filter="url(#shadow)">
-    <rect x="104" y="140" width="304" height="232" rx="48" fill="#ffffff"/>
-    <rect x="132" y="178" width="248" height="42" rx="21" fill="#E8F8F3"/>
-    <path d="M156 288c0-39 32-71 71-71h65c39 0 71 32 71 71s-32 71-71 71h-65c-39 0-71-32-71-71Z" fill="#F5F6FA"/>
-    <text x="256" y="313" text-anchor="middle" font-size="86" font-weight="800" font-family="Arial, Tahoma, sans-serif" fill="#0F6E56">م</text>
-    <circle cx="351" cy="255" r="18" fill="#1D9E75"/>
+    <rect x="104" y="140" width="304" height="232" rx="48" fill="#1B1F26" stroke="url(#gold)" stroke-width="4"/>
+    <rect x="132" y="178" width="248" height="42" rx="21" fill="#F2D675" opacity=".14"/>
+    <path d="M156 288c0-39 32-71 71-71h65c39 0 71 32 71 71s-32 71-71 71h-65c-39 0-71-32-71-71Z" fill="#14171C"/>
+    <text x="256" y="313" text-anchor="middle" font-size="86" font-weight="800" font-family="Arial, Tahoma, sans-serif" fill="url(#gold)">م</text>
+    <circle cx="351" cy="255" r="18" fill="url(#gold)"/>
   </g>
 </svg>`;
 
@@ -581,8 +593,8 @@ function setupPwaAssets(){
     start_url: '.',
     scope: '.',
     display: 'standalone',
-    background_color: '#F5F6FA',
-    theme_color: '#0F6E56',
+    background_color: '#0A0C10',
+    theme_color: '#14171C',
     icons: [
       {src: svgUrl, sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable'}
     ]
