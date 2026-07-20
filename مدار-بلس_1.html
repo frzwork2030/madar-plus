@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>مُدار بلس — الراتب، المصروفات، والخطة الادخارية</title>
+<meta name="theme-color" content="#0F6E56">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="مُدار بلس">
+<meta name="application-name" content="مُدار بلس">
+<link id="manifestLink" rel="manifest">
+<link id="appleIconLink" rel="apple-touch-icon">
+<link id="faviconLink" rel="icon" type="image/svg+xml">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Tahoma,sans-serif;background:#F5F6FA;color:#1a1a2e;direction:rtl;min-height:100vh}
+.app{max-width:440px;margin:0 auto;padding:0 0 40px}
+
+/* Header */
+.header{background:linear-gradient(135deg,#1D9E75 0%,#0F6E56 100%);padding:28px 20px 24px;text-align:center;color:#fff}
+.header h1{font-size:22px;font-weight:600}
+.header p{font-size:13px;opacity:.84;margin-top:5px}
+
+/* Tabs */
+.tabs{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:#fff;border-bottom:1px solid #E8EAF0;position:sticky;top:0;z-index:100}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;min-width:68px;padding:13px 9px 11px;text-align:center;font-size:10px;color:#888;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;user-select:none;white-space:nowrap}
+.plus-badge{display:inline-block;background:rgba(255,255,255,.22);border-radius:99px;padding:2px 9px;font-size:11px;font-weight:800;margin-right:6px;vertical-align:1px;letter-spacing:.5px}
+.tab i{display:block;font-size:21px;margin-bottom:3px}
+.tab.active{color:#1D9E75;border-bottom-color:#1D9E75;font-weight:600}
+
+/* Sections */
+.section{display:none;padding:16px}
+.section.active{display:block}
+
+/* Cards */
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.card-title{font-size:13px;font-weight:600;color:#555;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.card-title i{font-size:18px;color:#1D9E75}
+.card-title .count{margin-right:auto;background:#F0FBF7;color:#0F6E56;border-radius:99px;padding:4px 9px;font-size:11px}
+
+/* Fields */
+.field{margin-bottom:13px}
+.field label{display:block;font-size:13px;color:#666;margin-bottom:6px;font-weight:500}
+.field input,.field textarea{width:100%;padding:11px 13px;border:1.5px solid #E8EAF0;border-radius:10px;font-size:15px;background:#FAFBFC;color:#1a1a2e;font-family:inherit;-webkit-appearance:none;appearance:none}
+.field textarea{min-height:150px;resize:vertical;line-height:1.75}
+.field input:focus,.field textarea:focus{outline:none;border-color:#1D9E75;background:#fff}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* Metric cards */
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+.metric{background:#F5F6FA;border-radius:12px;padding:14px 13px;min-width:0}
+.metric .lbl{font-size:12px;color:#888;margin-bottom:6px;font-weight:500}
+.metric .val{font-size:20px;font-weight:700;word-break:break-word}
+.metric .val.green{color:#0F6E56}
+.metric .val.red{color:#C0392B}
+.metric .val.amber{color:#E67E22}
+.metric .val.blue{color:#1565C0}
+
+/* Obligations and expenses */
+.ob-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #F0F1F5}
+.ob-item:last-child{border-bottom:none}
+.ob-name{font-size:14px;color:#1a1a2e;font-weight:500;line-height:1.4}
+.ob-note{font-size:11px;color:#999;margin-top:3px;line-height:1.5}
+.ob-tag{font-size:11px;padding:3px 9px;border-radius:99px;margin-top:5px;display:inline-block;font-weight:600}
+.ob-tag.d{background:#FDECEA;color:#C0392B}
+.ob-tag.s{background:#E8F8F3;color:#0F6E56}
+.ob-tag.e{background:#EBF3FC;color:#1565C0}
+.ob-tag.x{background:#FFF3E0;color:#E67E22}
+.ob-actions{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.ob-right{font-size:14px;font-weight:700;color:#1a1a2e;margin-left:2px;white-space:nowrap;text-align:left}
+.ob-right small{display:block;font-size:11px;color:#999;font-weight:400;text-align:left;margin-top:3px}
+.icon-btn{background:none;border:1.5px solid #E8EAF0;border-radius:8px;color:#888;cursor:pointer;padding:6px 8px;font-size:15px;line-height:1;display:flex;align-items:center}
+.icon-btn:active{background:#F5F6FA}
+
+/* Buttons */
+.add-btn,.outline-btn{width:100%;padding:13px;background:#fff;border:2px dashed #B8ECD9;border-radius:12px;font-size:14px;color:#1D9E75;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:8px;font-weight:600;font-family:inherit}
+.add-btn:active,.outline-btn:active{background:#F0FBF7}
+.outline-btn{border-style:solid;border-color:#E8EAF0;color:#666}
+.action-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.primary-btn{width:100%;padding:13px;background:#1D9E75;border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px}
+.primary-btn:active{background:#0F6E56}
+.danger-btn{width:100%;padding:13px;background:#fff;border:1.5px solid #FDECEA;border-radius:12px;color:#C0392B;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px}
+.danger-btn:active{background:#FDECEA}
+
+/* Empty state */
+.empty{text-align:center;padding:32px 20px;color:#aaa}
+.empty i{font-size:40px;display:block;margin-bottom:10px;color:#D0D3DC}
+.empty p{font-size:14px;line-height:1.6}
+
+/* Summary bar */
+.summary-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 16px;border-radius:12px;margin-bottom:12px;font-size:14px;font-weight:600;line-height:1.5}
+.summary-bar.ok{background:#E8F8F3;color:#0F6E56}
+.summary-bar.warn{background:#FEF9E7;color:#E67E22}
+.summary-bar.bad{background:#FDECEA;color:#C0392B}
+
+/* Progress */
+.progress-wrap{margin-bottom:14px}
+.progress-label{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:6px;font-weight:500}
+.progress-bar{height:10px;background:#F0F1F5;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;border-radius:99px;transition:width .4s ease}
+
+/* Long-term obligations */
+.lt-item{padding:14px 0;border-bottom:1px solid #F0F1F5}
+.lt-item:last-child{border-bottom:none}
+.lt-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
+.lt-name{font-size:14px;font-weight:600;color:#1a1a2e;line-height:1.45}
+.lt-note{font-size:12px;color:#888;margin-top:3px;line-height:1.5}
+.lt-actions{display:flex;gap:5px;align-items:center;flex-shrink:0}
+.lt-badge{padding:3px 8px;border-radius:99px;font-size:11px;font-weight:700;background:#EBF3FC;color:#1565C0;white-space:nowrap}
+.lt-progress-bar{height:9px;background:#F0F1F5;border-radius:99px;overflow:hidden;margin-bottom:7px}
+.lt-progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#1D9E75,#1565C0);transition:width .4s ease}
+.lt-footer{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;color:#888;line-height:1.55}
+.lt-footer span:last-child{grid-column:1/-1}
+.lt-preview{background:#F5F6FA;border-radius:10px;padding:12px;margin-top:4px;display:none}
+
+/* Tip */
+.tip{font-size:12px;color:#888;padding:11px 13px;background:#F5F6FA;border-radius:10px;line-height:1.7;margin-top:8px;border-right:3px solid #1D9E75}
+.parser-note{font-size:12px;color:#777;line-height:1.7;margin-top:-3px;margin-bottom:12px}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:flex-end}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:18px;color:#1a1a2e}
+.welcome-overlay{display:none;position:fixed;inset:0;background:rgba(26,26,46,.58);z-index:260;align-items:center;justify-content:center;padding:18px}
+.welcome-overlay.open{display:flex}
+.welcome-card{width:100%;max-width:390px;background:#fff;border-radius:22px;padding:24px 20px 20px;text-align:center;box-shadow:0 18px 46px rgba(0,0,0,.18)}
+.welcome-icon{width:70px;height:70px;margin:0 auto 13px;border-radius:22px;background:linear-gradient(135deg,#1D9E75,#1565C0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;box-shadow:0 12px 24px rgba(29,158,117,.22)}
+.welcome-card h2{font-size:28px;color:#0F6E56;margin-bottom:6px}
+.welcome-card p{font-size:14px;color:#666;line-height:1.9;margin-bottom:14px}
+.welcome-points{display:grid;gap:8px;margin:14px 0;text-align:right}
+.welcome-point{background:#F5F6FA;border-radius:12px;padding:10px 12px;font-size:13px;color:#555;line-height:1.6}
+.welcome-point i{color:#1D9E75;margin-left:5px}
+.type-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px}
+.type-btn{padding:11px 4px;text-align:center;font-size:12px;border:1.5px solid #E8EAF0;border-radius:10px;cursor:pointer;background:#FAFBFC;color:#888;font-weight:600;font-family:inherit;transition:all .15s}
+.type-btn.sel{border-color:#1D9E75;background:#E8F8F3;color:#0F6E56}
+.type-btn i{display:block;font-size:20px;margin-bottom:4px}
+.save-btn{width:100%;padding:14px;background:#1D9E75;border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:14px;font-family:inherit}
+.save-btn:active{background:#0F6E56}
+.cancel-btn{width:100%;padding:12px;background:none;border:1.5px solid #E8EAF0;border-radius:12px;color:#888;font-size:14px;cursor:pointer;margin-top:8px;font-family:inherit}
+
+/* Monthly history, more page, and themes */
+.history-item{padding:13px 0;border-bottom:1px solid #F0F1F5}
+.history-item:last-child{border-bottom:none}
+.history-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:9px}
+.history-month{font-size:15px;font-weight:700;color:#1a1a2e}
+.history-note{font-size:12px;color:#888;line-height:1.6;margin-top:3px}
+.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.mini-metric{background:#F5F6FA;border-radius:10px;padding:9px 6px;text-align:center}
+.mini-metric span{display:block;font-size:10px;color:#888;margin-bottom:4px}
+.mini-metric b{font-size:12px;color:#1a1a2e}
+.delta{display:inline-flex;align-items:center;border-radius:99px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap}
+.delta.good{background:#E8F8F3;color:#0F6E56}
+.delta.bad{background:#FDECEA;color:#C0392B}
+.more-logo{text-align:center;padding:8px 0 18px}
+.more-logo-icon{width:58px;height:58px;border-radius:18px;margin:0 auto 10px;background:linear-gradient(135deg,#1D9E75,#1565C0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;box-shadow:0 10px 22px rgba(29,158,117,.22)}
+.more-app-name{font-size:22px;font-weight:800;color:#0F6E56}
+.more-tagline{font-size:12.5px;color:#888;margin-top:4px}
+.more-version{display:inline-block;margin-top:8px;font-size:11px;color:#666;background:#F5F6FA;border:1px solid #E8EAF0;border-radius:99px;padding:4px 11px}
+.contact-row{display:flex;align-items:center;gap:11px;text-decoration:none;color:#1a1a2e;padding:12px 0;border-bottom:1px dashed #E8EAF0}
+.contact-row:last-child{border-bottom:none}
+.contact-row i{font-size:22px;color:#1D9E75}
+.contact-label{font-size:11px;color:#888}
+.contact-value{font-size:14px;font-weight:700;margin-top:2px}
+.license-note{margin-top:10px;padding:12px 13px;border-radius:12px;background:#FEF9E7;border:1px solid #F8E7A8;color:#7A4D00;font-size:13px;line-height:1.8}
+.faq-item{padding:12px 0;border-bottom:1px dashed #E8EAF0}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-size:13.5px;font-weight:800;color:#1a1a2e;margin-bottom:5px;line-height:1.6}
+.faq-a{font-size:12.5px;color:#777;line-height:1.8}
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.theme-btn{height:46px;border:2px solid #E8EAF0;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;font-weight:700;color:#555}
+.theme-btn span{display:inline-block;width:13px;height:13px;border-radius:50%;margin-left:5px;vertical-align:-2px}
+.theme-btn.active{border-color:#1D9E75;background:#F0FBF7}
+.theme-blue .header{background:linear-gradient(135deg,#1565C0 0%,#0B3D91 100%)}
+.theme-blue .tab.active,.theme-blue .card-title i,.theme-blue .contact-row i,.theme-blue .more-app-name{color:#1565C0}
+.theme-blue .tab.active{border-bottom-color:#1565C0}
+.theme-blue .primary-btn,.theme-blue .save-btn{background:#1565C0}
+.theme-blue .field input:focus,.theme-blue .field textarea:focus,.theme-blue .type-btn.sel{border-color:#1565C0}
+.theme-purple .header{background:linear-gradient(135deg,#7B2CBF 0%,#3C096C 100%)}
+.theme-purple .tab.active,.theme-purple .card-title i,.theme-purple .contact-row i,.theme-purple .more-app-name{color:#7B2CBF}
+.theme-purple .tab.active{border-bottom-color:#7B2CBF}
+.theme-purple .primary-btn,.theme-purple .save-btn{background:#7B2CBF}
+.theme-purple .field input:focus,.theme-purple .field textarea:focus,.theme-purple .type-btn.sel{border-color:#7B2CBF}
+.theme-gold .header{background:linear-gradient(135deg,#C88719 0%,#7A4D00 100%)}
+.theme-gold .tab.active,.theme-gold .card-title i,.theme-gold .contact-row i,.theme-gold .more-app-name{color:#C88719}
+.theme-gold .tab.active{border-bottom-color:#C88719}
+.theme-gold .primary-btn,.theme-gold .save-btn{background:#C88719}
+.theme-gold .field input:focus,.theme-gold .field textarea:focus,.theme-gold .type-btn.sel{border-color:#C88719}
+
+@media (max-width:360px){
+  .section{padding:12px}
+  .tab{font-size:9px}
+  .tab i{font-size:18px}
+  .metric .val{font-size:18px}
+  .action-row{grid-template-columns:1fr}
+  .mini-grid{grid-template-columns:1fr}
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <h1><span class="plus-badge">PLUS</span>مُدار بلس</h1>
+    <p>يدير المستخدم أمواله، يتابع صرفه، ويوزّع فائضه على خطة ادخارية شهرية</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('salary')">
+      <i class="ti ti-cash"></i>الراتب
+    </div>
+    <div class="tab" onclick="switchTab('summary')">
+      <i class="ti ti-chart-pie"></i>الملخص
+    </div>
+    <div class="tab" onclick="switchTab('oblig')">
+      <i class="ti ti-list-check"></i>الالتزامات
+    </div>
+    <div class="tab" onclick="switchTab('expenses')">
+      <i class="ti ti-message-2-dollar"></i>المصروفات
+    </div>
+    <div class="tab" onclick="switchTab('longterm')">
+      <i class="ti ti-calendar-time"></i>طويلة الأمد
+    </div>
+    <div class="tab" onclick="switchTab('history')">
+      <i class="ti ti-chart-bar"></i>الأشهر
+    </div>
+    <div class="tab" onclick="switchTab('plan')">
+      <i class="ti ti-target-arrow"></i>الخطة الاستثمارية
+    </div>
+    <div class="tab" onclick="switchTab('tips')">
+      <i class="ti ti-bulb"></i>النصائح
+    </div>
+    <div class="tab" onclick="switchTab('more')">
+      <i class="ti ti-dots"></i>المزيد
+    </div>
+  </div>
+
+  <div class="section active" id="tab-salary">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-building-bank"></i> الراتب الأساسي والبدلات</div>
+      <div class="field">
+        <label>الراتب الأساسي (ريال)</label>
+        <input type="number" inputmode="numeric" id="base" placeholder="مثال: 8000" oninput="calc()">
+      </div>
+      <div class="row2">
+        <div class="field"><label>بدل السكن</label><input type="number" inputmode="numeric" id="housing" placeholder="0" oninput="calc()"></div>
+        <div class="field"><label>بدل النقل</label><input type="number" inputmode="numeric" id="transport" placeholder="0" oninput="calc()"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>بدل الاتصالات</label><input type="number" inputmode="numeric" id="comms" placeholder="0" oninput="calc()"></div>
+        <div class="field"><label>بدلات أخرى</label><input type="number" inputmode="numeric" id="other_allow" placeholder="0" oninput="calc()"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-minus-circle"></i> الاستقطاعات الشهرية</div>
+      <div class="row2">
+        <div class="field"><label>التأمينات الاجتماعية</label><input type="number" inputmode="numeric" id="gosi" placeholder="0" oninput="calc()"></div>
+        <div class="field"><label>استقطاعات أخرى</label><input type="number" inputmode="numeric" id="other_ded" placeholder="0" oninput="calc()"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-star"></i> إضافات متغيرة</div>
+      <div class="row2">
+        <div class="field"><label>العمل الإضافي</label><input type="number" inputmode="numeric" id="overtime" placeholder="0" oninput="calc()"></div>
+        <div class="field"><label>حوافز / مكافآت</label><input type="number" inputmode="numeric" id="bonus" placeholder="0" oninput="calc()"></div>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric">
+        <div class="lbl">إجمالي الراتب</div>
+        <div class="val" id="m-gross" style="color:#1a1a2e">0 ر.س</div>
+      </div>
+      <div class="metric">
+        <div class="lbl">الراتب الصافي</div>
+        <div class="val green" id="m-net">0 ر.س</div>
+      </div>
+      <div class="metric">
+        <div class="lbl">مصروفات الرسائل</div>
+        <div class="val blue" id="m-expenses">0 ر.س</div>
+      </div>
+      <div class="metric">
+        <div class="lbl">الفائض المتوقع</div>
+        <div class="val green" id="m-surplus">0 ر.س</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="tab-oblig">
+    <div id="oblig-list"></div>
+    <button class="add-btn" onclick="openModal()">
+      <i class="ti ti-plus" style="font-size:18px"></i> إضافة التزام جديد
+    </button>
+    <div class="tip" style="margin-top:12px">أضف أقساطك، الإيجار، الفواتير، أو أي مصروف شهري ثابت.</div>
+  </div>
+
+  <div class="section" id="tab-expenses">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-message-2-dollar"></i> حساب المصروفات من الرسائل</div>
+      <p class="parser-note">الصق رسائل البنك هنا. الصفحة تحسب عمليات الشراء والسحب والدفع فقط، وتتجاهل رسائل الراتب والإيداع قدر الإمكان.</p>
+      <div class="field">
+        <label>رسائل البنك النصية</label>
+        <textarea id="sms-input" placeholder="مثال:
+تمت عملية شراء بمبلغ 45.50 ريال لدى مطعم...
+Purchase SAR 120.00 at Market...
+سحب نقدي 500 ر.س من صراف..."></textarea>
+      </div>
+      <div class="action-row">
+        <button class="primary-btn" onclick="importSmsExpenses()"><i class="ti ti-sparkles"></i> تحليل الرسائل</button>
+        <button class="outline-btn" onclick="document.getElementById('sms-input').value=''"><i class="ti ti-eraser"></i> تفريغ النص</button>
+      </div>
+      <div class="tip">ملاحظة: الموقع لا يستطيع قراءة رسائل جوالك مباشرة من المتصفح، لذلك الطريقة الآمنة هي نسخ الرسائل ولصقها هنا.</div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric">
+        <div class="lbl">إجمالي المصروفات</div>
+        <div class="val blue" id="sms-total">0 ر.س</div>
+      </div>
+      <div class="metric">
+        <div class="lbl">عدد العمليات</div>
+        <div class="val" id="sms-count" style="color:#1a1a2e">0</div>
+      </div>
+    </div>
+
+    <div id="sms-result"></div>
+    <button class="danger-btn" onclick="clearSmsExpenses()"><i class="ti ti-trash"></i> مسح مصروفات الرسائل</button>
+  </div>
+
+  <div class="section" id="tab-longterm">
+    <div class="tip" style="margin-bottom:12px">هذا القسم للمتابعة فقط، ولا يدخل في حساب الفائض الشهري إلا إذا أضفت القسط الشهري في تبويب الالتزامات.</div>
+    <div id="lt-list"></div>
+    <button class="add-btn" onclick="openLtModal()">
+      <i class="ti ti-plus" style="font-size:18px"></i> إضافة التزام طويل الأمد
+    </button>
+  </div>
+
+  <div class="section" id="tab-plan">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-target-arrow"></i> الخطة الاستثمارية — توزيع الفائض</div>
+      <p class="parser-note">توزيع الفائض الشهري المتوقع (بعد خصم الالتزامات ومصروفات الرسائل) على ثلاث محاور بنسب ثابتة: طوارئ 20%، مصاريف دورية 30%، واستثمار/ادخار 50%.</p>
+      <div id="plan-summary-bar"></div>
+    </div>
+    <div id="plan-cards"></div>
+    <div class="tip">هذا التقسيم يُحسب تلقائيًا من الفائض الظاهر في تبويب الراتب. حدّث الراتب والالتزامات أولًا لتحصل على أرقام دقيقة، وشوف تبويب "النصائح" لتفاصيل أين توضع كل حصة.</div>
+  </div>
+
+  <div class="section" id="tab-tips">
+    <div id="tips-cards"></div>
+  </div>
+
+  <div class="section" id="tab-summary">
+    <div id="summary-content"></div>
+  </div>
+
+  <div class="section" id="tab-history">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-calendar-stats"></i> حفظ ومقارنة الأشهر</div>
+      <div class="field">
+        <label>الشهر</label>
+        <input type="month" id="snapshot-month">
+      </div>
+      <div class="field">
+        <label>ملاحظة اختيارية</label>
+        <input type="text" id="snapshot-note" placeholder="مثال: شهر سفر، رمضان، بداية اشتراك جديد...">
+      </div>
+      <button class="primary-btn" onclick="saveMonthlySnapshot()"><i class="ti ti-device-floppy"></i> حفظ نسخة هذا الشهر</button>
+      <div class="tip">احفظ نهاية كل شهر لقطة من الراتب والالتزامات والمصروفات، وبعدها تقدر تقارن بين الأشهر وتشوف هل صرفك يزيد أو ينقص.</div>
+    </div>
+    <div id="history-content"></div>
+  </div>
+
+  <div class="section" id="tab-more">
+    <div class="more-logo">
+      <div class="more-logo-icon"><i class="ti ti-wallet"></i></div>
+      <div class="more-app-name">مُدار بلس</div>
+      <div class="more-tagline">لإدارة الأموال، متابعة الصرف، وتوزيع الفائض على خطة ادخارية</div>
+      <div class="more-version">الإصدار 2.0.0 · Plus</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-address-book"></i> تواصل معنا</div>
+      <a class="contact-row" href="https://instagram.com/NKMMLK_STORE" target="_blank" rel="noopener">
+        <i class="ti ti-brand-instagram"></i>
+        <div>
+          <div class="contact-label">إنستقرام</div>
+          <div class="contact-value">NKMMLK_STORE@</div>
+        </div>
+      </a>
+      <a class="contact-row" href="mailto:Faisal-PR2030@outlook.com">
+        <i class="ti ti-mail"></i>
+        <div>
+          <div class="contact-label">البريد الإلكتروني</div>
+          <div class="contact-value">Faisal-PR2030@outlook.com</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-info-circle"></i> عن التطبيق</div>
+      <p class="parser-note" style="margin:0">"مُدار بلس" نسخة موسّعة تساعد العميل يدير أمواله ويتابع راتبه الصافي، التزاماته، مصروفات الرسائل، والالتزامات طويلة الأمد، مع خطة تلقائية لتوزيع الفائض على الطوارئ والمصاريف الدورية والاستثمار. كل البيانات تحفظ محليًا على جهاز العميل فقط.</p>
+      <div class="license-note">عزيزي المستخدم، كل نسخة خاصة بعميل واحد، ولا أحلل النشر. إذا أردت نشر الفائدة فشارك أحبابك متجرنا.</div>
+      <div class="tip">تطوير: FRZ</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-palette"></i> ألوان التطبيق</div>
+      <div class="theme-grid">
+        <button class="theme-btn" data-theme="green" onclick="setTheme('green')"><span style="background:#1D9E75"></span>أخضر</button>
+        <button class="theme-btn" data-theme="blue" onclick="setTheme('blue')"><span style="background:#1565C0"></span>أزرق</button>
+        <button class="theme-btn" data-theme="purple" onclick="setTheme('purple')"><span style="background:#7B2CBF"></span>بنفسجي</button>
+        <button class="theme-btn" data-theme="gold" onclick="setTheme('gold')"><span style="background:#C88719"></span>ذهبي</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-database-export"></i> نسخة احتياطية</div>
+      <div class="action-row">
+        <button class="primary-btn" onclick="exportBackup()"><i class="ti ti-download"></i> حفظ نسخة</button>
+        <button class="outline-btn" onclick="document.getElementById('backup-file').click()"><i class="ti ti-upload"></i> استرجاع نسخة</button>
+      </div>
+      <input id="backup-file" type="file" accept="application/json,.json" style="display:none" onchange="importBackup(event)">
+      <div class="tip">النسخة الاحتياطية تحفظ الراتب والالتزامات والمصروفات وسجل الأشهر في ملف JSON على جهاز العميل.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-help-circle"></i> أسئلة شائعة</div>
+      <div class="faq-item">
+        <div class="faq-q">وين تنحفظ بياناتي؟</div>
+        <div class="faq-a">كل البيانات تنحفظ محليًا على جهازك داخل المتصفح، ولا يتم إرسالها لأي جهة خارجية.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">كيف أحفظ نسخة احتياطية؟</div>
+        <div class="faq-a">من صفحة المزيد اضغط "حفظ نسخة"، وسيتم تنزيل ملف JSON يحتوي على بيانات الراتب والالتزامات والمصروفات وسجل الأشهر.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">كيف أسترجع نسخة احتياطية؟</div>
+        <div class="faq-a">اضغط "استرجاع نسخة" واختر ملف النسخة الاحتياطية. ملاحظة: الاسترجاع يستبدل البيانات الحالية.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">كيف أقارن صرفي بين الأشهر؟</div>
+        <div class="faq-a">ادخل صفحة الأشهر واضغط "حفظ نسخة هذا الشهر" نهاية كل شهر، بعدها ستظهر مقارنة الصرف والفائض بين الأشهر المحفوظة.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">هل التطبيق يقرأ رسائل البنك تلقائيًا؟</div>
+        <div class="faq-a">لا، المتصفح لا يسمح بقراءة رسائل الجوال مباشرة. انسخ رسائل البنك والصقها في صفحة المصروفات ثم اضغط تحليل الرسائل.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">كيف تُحسب نسب 20% / 30% / 50%؟</div>
+        <div class="faq-a">تبويب "الخطة الاستثمارية" يأخذ الفائض الشهري المتوقع (بعد خصم الالتزامات ومصروفات الرسائل) ويقسمه: 20% طوارئ، 30% مصاريف دورية، 50% استثمار وادخار. إذا كان الفائض صفر أو سالب، لا يوجد مبلغ للتوزيع حتى تُعدّل الراتب أو الالتزامات.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">هل النصائح في تبويب "النصائح" توصية استثمارية؟</div>
+        <div class="faq-a">لا، هذه ملاحظات شخصية للمستخدم لتذكيره أين اعتاد يوجّه كل حصة من فائضه، وليست توصية أو ضمانًا للعوائد. راجع شروط أي جهة قبل التحويل.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3><i class="ti ti-plus-circle" style="vertical-align:-3px;margin-left:6px;color:#1D9E75"></i>إضافة التزام</h3>
+    <div class="field">
+      <label>اسم الالتزام</label>
+      <input type="text" id="ob-name" placeholder="مثال: قسط سيارة، إيجار، نت...">
+    </div>
+    <div class="field">
+      <label>المبلغ الشهري (ريال)</label>
+      <input type="number" inputmode="numeric" id="ob-amount" placeholder="0">
+    </div>
+    <div class="field">
+      <label>التصنيف</label>
+      <div class="type-grid">
+        <button class="type-btn sel" onclick="selType(this,'d')">
+          <i class="ti ti-credit-card"></i>أقساط/ديون
+        </button>
+        <button class="type-btn" onclick="selType(this,'s')">
+          <i class="ti ti-home"></i>مصروف ثابت
+        </button>
+        <button class="type-btn" onclick="selType(this,'e')">
+          <i class="ti ti-bolt"></i>فاتورة/خدمات
+        </button>
+      </div>
+    </div>
+    <button class="save-btn" onclick="saveOb()">حفظ</button>
+    <button class="cancel-btn" onclick="closeModal()">إلغاء</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="lt-modal">
+  <div class="modal">
+    <h3><i class="ti ti-calendar-time" style="vertical-align:-3px;margin-left:6px;color:#1565C0"></i>التزام طويل الأمد</h3>
+    <div class="field">
+      <label>اسم الالتزام</label>
+      <input type="text" id="lt-name" placeholder="مثال: قرض عقاري، سيارة، تمويل شخصي...">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>المبلغ الكلي (ريال)</label>
+        <input type="number" inputmode="numeric" id="lt-total" placeholder="0" oninput="updateLtPreview()">
+      </div>
+      <div class="field">
+        <label>المبلغ المدفوع (ريال)</label>
+        <input type="number" inputmode="numeric" id="lt-paid" placeholder="0" oninput="updateLtPreview()">
+      </div>
+    </div>
+    <div class="field">
+      <label>ملاحظة اختيارية</label>
+      <input type="text" id="lt-note" placeholder="مثال: ينتهي في 2027">
+    </div>
+    <div class="lt-preview" id="lt-preview">
+      <div class="progress-label">
+        <span>نسبة الإنجاز</span>
+        <span id="lt-pct-label" style="font-weight:700;color:#0F6E56">0%</span>
+      </div>
+      <div class="lt-progress-bar"><div class="lt-progress-fill" id="lt-pct-bar" style="width:0%"></div></div>
+      <div style="font-size:12px;color:#888;margin-top:5px">المتبقي: <strong id="lt-remaining-label" style="color:#C0392B">0 ر.س</strong></div>
+    </div>
+    <button class="save-btn" style="background:#1565C0" onclick="saveLt()">حفظ</button>
+    <button class="cancel-btn" onclick="closeLtModal()">إلغاء</button>
+  </div>
+</div>
+
+<div class="welcome-overlay" id="welcome-modal">
+  <div class="welcome-card">
+    <div class="welcome-icon"><i class="ti ti-wallet"></i></div>
+    <h2>مُدار بلس</h2>
+    <p>مرحبًا بك في مُدار بلس، مساحة تساعدك تدير أموالك، تتابع صرفك والتزاماتك، وتوزّع فائضك على خطة ادخارية واضحة.</p>
+    <div class="welcome-points">
+      <div class="welcome-point"><i class="ti ti-check"></i>احسب راتبك الصافي والفائض المتوقع.</div>
+      <div class="welcome-point"><i class="ti ti-check"></i>تابع الالتزامات والمصروفات طويلة الأمد.</div>
+      <div class="welcome-point"><i class="ti ti-check"></i>وزّع فائضك تلقائيًا: 20% طوارئ، 30% مصاريف دورية، 50% استثمار.</div>
+      <div class="welcome-point"><i class="ti ti-check"></i>احفظ نسخة شهرية وقارن صرفك مع الأشهر السابقة.</div>
+    </div>
+    <button class="primary-btn" type="button" onclick="closeWelcome()">ابدأ الآن</button>
+  </div>
+</div>
+
+<script>
+const APP_ICON_SVG = `
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="70" y1="40" x2="440" y2="470" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1D9E75"/>
+      <stop offset="1" stop-color="#1565C0"/>
+    </linearGradient>
+    <filter id="shadow" x="70" y="86" width="372" height="320" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#0B3D36" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="118" fill="url(#bg)"/>
+  <circle cx="398" cy="104" r="72" fill="#ffffff" opacity=".12"/>
+  <circle cx="100" cy="408" r="92" fill="#ffffff" opacity=".10"/>
+  <g filter="url(#shadow)">
+    <rect x="104" y="140" width="304" height="232" rx="48" fill="#ffffff"/>
+    <rect x="132" y="178" width="248" height="42" rx="21" fill="#E8F8F3"/>
+    <path d="M156 288c0-39 32-71 71-71h65c39 0 71 32 71 71s-32 71-71 71h-65c-39 0-71-32-71-71Z" fill="#F5F6FA"/>
+    <text x="256" y="313" text-anchor="middle" font-size="86" font-weight="800" font-family="Arial, Tahoma, sans-serif" fill="#0F6E56">م</text>
+    <circle cx="351" cy="255" r="18" fill="#1D9E75"/>
+  </g>
+</svg>`;
+
+function setupPwaAssets(){
+  const svgUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(APP_ICON_SVG);
+  const favicon = document.getElementById('faviconLink');
+  const appleIcon = document.getElementById('appleIconLink');
+  if(favicon) favicon.href = svgUrl;
+  if(appleIcon) appleIcon.href = svgUrl;
+  const manifest = {
+    name: 'مُدار بلس — الراتب، المصروفات، والخطة الادخارية',
+    short_name: 'مُدار بلس',
+    description: 'تطبيق يساعد المستخدم يدير أمواله، يتابع صرفه والتزاماته، ويوزّع فائضه على خطة ادخارية شهريًا.',
+    dir: 'rtl',
+    lang: 'ar',
+    start_url: '.',
+    scope: '.',
+    display: 'standalone',
+    background_color: '#F5F6FA',
+    theme_color: '#0F6E56',
+    icons: [
+      {src: svgUrl, sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable'}
+    ]
+  };
+  const manifestBlob = new Blob([JSON.stringify(manifest)], {type:'application/manifest+json'});
+  const manifestUrl = URL.createObjectURL(manifestBlob);
+  const manifestLink = document.getElementById('manifestLink');
+  if(manifestLink) manifestLink.href = manifestUrl;
+}
+
+setupPwaAssets();
+
+let obligations = JSON.parse(localStorage.getItem('sgo_ob') || '[]');
+let salaryData = JSON.parse(localStorage.getItem('sgo_sal') || '{}');
+let smsExpenses = JSON.parse(localStorage.getItem('sgo_sms_exp') || '[]');
+let longterms = JSON.parse(localStorage.getItem('sgo_lt') || '[]');
+let monthlySnapshots = JSON.parse(localStorage.getItem('sgo_monthly') || '[]');
+let currentTheme = localStorage.getItem('sgo_theme') || 'green';
+let editIdx = -1;
+let ltEditIdx = -1;
+let selTypeVal = 'd';
+
+window.onload = function(){
+  setTheme(currentTheme, false);
+  const fields = ['base','housing','transport','comms','other_allow','gosi','other_ded','overtime','bonus'];
+  fields.forEach(f => { if(salaryData[f]) document.getElementById(f).value = salaryData[f]; });
+  const monthInput = document.getElementById('snapshot-month');
+  if(monthInput) monthInput.value = currentMonthKey();
+  calc();
+  renderOb();
+  renderSmsExpenses();
+  renderLt();
+  renderMonthlyHistory();
+  showWelcome();
+};
+
+function saveSalary(){
+  const fields = ['base','housing','transport','comms','other_allow','gosi','other_ded','overtime','bonus'];
+  const d = {};
+  fields.forEach(f => d[f] = document.getElementById(f).value);
+  localStorage.setItem('sgo_sal', JSON.stringify(d));
+}
+
+function switchTab(t){
+  const tabs = ['salary','summary','oblig','expenses','longterm','history','plan','tips','more'];
+  document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', tabs[i]===t));
+  document.querySelectorAll('.section').forEach(el => el.classList.toggle('active', el.id === 'tab-' + t));
+  if(t==='summary') renderSummary();
+  if(t==='oblig') renderOb();
+  if(t==='expenses') renderSmsExpenses();
+  if(t==='longterm') renderLt();
+  if(t==='plan') renderPlan();
+  if(t==='tips') renderTips();
+  if(t==='history') renderMonthlyHistory();
+}
+
+function v(id){ return parseFloat(document.getElementById(id).value) || 0; }
+function fmt(n){ return Math.round(n).toLocaleString('ar-SA'); }
+function money(n){ return fmt(n)+' ر.س'; }
+function totalObligations(){ return obligations.reduce((s,o) => s + Number(o.amount || 0), 0); }
+function totalSmsExpenses(){ return smsExpenses.reduce((s,o) => s + Number(o.amount || 0), 0); }
+function totalLongTermRemaining(){ return longterms.reduce((s,o) => s + Math.max(Number(o.total || 0) - Number(o.paid || 0), 0), 0); }
+function totalLongTermPaid(){ return longterms.reduce((s,o) => s + Math.max(Number(o.paid || 0), 0), 0); }
+
+function calc(){
+  const gross = v('base')+v('housing')+v('transport')+v('comms')+v('other_allow')+v('overtime')+v('bonus');
+  const ded = v('gosi')+v('other_ded');
+  const net = gross - ded;
+  const expenses = totalSmsExpenses();
+  const surplus = net - totalObligations() - expenses;
+  document.getElementById('m-gross').textContent = money(gross);
+  document.getElementById('m-net').textContent = money(net);
+  document.getElementById('m-expenses').textContent = money(expenses);
+  const surplusEl = document.getElementById('m-surplus');
+  surplusEl.textContent = money(surplus);
+  surplusEl.className = 'val ' + (surplus >= 0 ? 'green' : 'red');
+  saveSalary();
+  return {gross, net, ded, expenses, surplus};
+}
+
+function openModal(idx=-1){
+  editIdx = idx;
+  selTypeVal = 'd';
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('.type-btn')[0].classList.add('sel');
+  if(idx >= 0){
+    const o = obligations[idx];
+    document.getElementById('ob-name').value = o.name;
+    document.getElementById('ob-amount').value = o.amount;
+    selTypeVal = o.type;
+    const map = {'d':0,'s':1,'e':2};
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('sel'));
+    document.querySelectorAll('.type-btn')[map[o.type]].classList.add('sel');
+  } else {
+    document.getElementById('ob-name').value = '';
+    document.getElementById('ob-amount').value = '';
+  }
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+}
+
+function selType(el, t){
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  selTypeVal = t;
+}
+
+function saveOb(){
+  const name = document.getElementById('ob-name').value.trim();
+  const amount = parseFloat(document.getElementById('ob-amount').value) || 0;
+  if(!name || !amount){ alert('الرجاء إدخال اسم الالتزام والمبلغ'); return; }
+  const typeNames = {'d':'أقساط/ديون','s':'مصروف ثابت','e':'فاتورة/خدمات'};
+  const ob = {name, amount, type: selTypeVal, typeName: typeNames[selTypeVal]};
+  if(editIdx >= 0) obligations[editIdx] = ob;
+  else obligations.push(ob);
+  localStorage.setItem('sgo_ob', JSON.stringify(obligations));
+  closeModal();
+  renderOb();
+  calc();
+}
+
+function delOb(i){
+  if(confirm('حذف "'+obligations[i].name+'"؟')){
+    obligations.splice(i,1);
+    localStorage.setItem('sgo_ob', JSON.stringify(obligations));
+    renderOb();
+    calc();
+  }
+}
+
+function renderOb(){
+  const list = document.getElementById('oblig-list');
+  if(!obligations.length){
+    list.innerHTML = `<div class="empty"><i class="ti ti-list-check"></i><p>لا توجد التزامات بعد<br>اضغط + لإضافة أول التزام</p></div>`;
+    return;
+  }
+  const total = totalObligations();
+  list.innerHTML = `<div class="card">
+    <div class="card-title"><i class="ti ti-list"></i> الالتزامات <span class="count">إجمالي ${money(total)}</span></div>
+    ${obligations.map((o,i) => `<div class="ob-item">
+      <div>
+        <div class="ob-name">${escapeHtml(o.name)}</div>
+        <span class="ob-tag ${o.type}">${o.typeName}</span>
+      </div>
+      <div class="ob-actions">
+        <div class="ob-right">${money(o.amount)}</div>
+        <button class="icon-btn" onclick="openModal(${i})" aria-label="تعديل"><i class="ti ti-edit"></i></button>
+        <button class="icon-btn" onclick="delOb(${i})" aria-label="حذف" style="color:#C0392B;border-color:#FDECEA"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function normalizeDigits(text){
+  const ar = '٠١٢٣٤٥٦٧٨٩';
+  const fa = '۰۱۲۳۴۵۶۷۸۹';
+  return String(text).replace(/[٠-٩]/g, d => ar.indexOf(d)).replace(/[۰-۹]/g, d => fa.indexOf(d));
+}
+
+function parseAmount(raw){
+  let s = normalizeDigits(raw).replace(/\s/g,'');
+  if(s.includes('.') && s.includes(',')) s = s.replace(/,/g,'');
+  else if(s.includes(',') && /,\d{1,2}$/.test(s)) s = s.replace(',', '.');
+  else s = s.replace(/,/g,'');
+  const parts = s.split('.');
+  if(parts.length > 2) s = parts.slice(0,-1).join('') + '.' + parts[parts.length-1];
+  return parseFloat(s) || 0;
+}
+
+function getAmounts(text){
+  const normalized = normalizeDigits(text);
+  const patterns = [
+    /(?:SAR|SR|ر\.?س|ريال|ر س)\s*([0-9]+(?:[,.][0-9]{3})*(?:[,.][0-9]{1,2})?)/gi,
+    /([0-9]+(?:[,.][0-9]{3})*(?:[,.][0-9]{1,2})?)\s*(?:SAR|SR|ر\.?س|ريال|ر س)/gi,
+    /(?:مبلغ|بقيمة|amount)\s*([0-9]+(?:[,.][0-9]{3})*(?:[,.][0-9]{1,2})?)/gi
+  ];
+  const values = [];
+  patterns.forEach(re => {
+    let m;
+    while((m = re.exec(normalized)) !== null){
+      const around = normalized.slice(Math.max(0, m.index - 24), m.index + m[0].length + 24).toLowerCase();
+      if(/رصيد|balance|available|المتوفر|متاح/.test(around)) continue;
+      const amount = parseAmount(m[1]);
+      if(amount > 0) values.push(amount);
+    }
+  });
+  return values;
+}
+
+function isExpenseMessage(text){
+  const t = text.toLowerCase();
+  const expenseWords = /(شراء|مشتريات|مدى|خصم|سحب|دفع|فاتورة|تم استخدام|بطاقت|pos|purchase|debit|withdrawal|payment|paid|mada|spent)/i;
+  const incomeWords = /(راتب|إيداع|ايداع|تحويل وارد|استرداد|مسترد|refund|salary|deposit|credit)/i;
+  return expenseWords.test(t) && !incomeWords.test(t);
+}
+
+function guessCategory(text){
+  const t = text.toLowerCase();
+  if(/مطعم|كوفي|قهوة|cafe|coffee|restaurant|food|burger|pizza/.test(t)) return 'أكل ومشروبات';
+  if(/سوبر|بقال|تموين|market|panda|danube|carrefour|lulu|grocery/.test(t)) return 'مشتريات';
+  if(/وقود|بنزين|محطة|fuel|petrol|gas station/.test(t)) return 'مواصلات';
+  if(/stc|زين|موبايلي|كهرباء|ماء|فاتورة|bill|telecom/.test(t)) return 'فواتير';
+  if(/سحب|withdrawal|atm/.test(t)) return 'سحب نقدي';
+  return 'مصروف';
+}
+
+function guessMerchant(text){
+  const oneLine = text.replace(/\s+/g, ' ').trim();
+  const patterns = [
+    /(?:لدى|عند|في|من)\s+([^،.\n]{3,40})/i,
+    /(?:at|from|merchant)\s+([a-z0-9 &\-_'.]{3,40})/i
+  ];
+  for(const re of patterns){
+    const m = oneLine.match(re);
+    if(m) return m[1].trim();
+  }
+  return oneLine.slice(0, 42) || 'مصروف من رسالة';
+}
+
+function guessDate(text){
+  const normalized = normalizeDigits(text);
+  const m = normalized.match(/\b(\d{4}[/-]\d{1,2}[/-]\d{1,2}|\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?)\b/);
+  return m ? m[1] : '';
+}
+
+function hashText(text){
+  let h = 0;
+  for(let i=0;i<text.length;i++) h = ((h << 5) - h + text.charCodeAt(i)) | 0;
+  return String(Math.abs(h));
+}
+
+function importSmsExpenses(){
+  const input = document.getElementById('sms-input').value.trim();
+  if(!input){ alert('الصق الرسائل أولًا'); return; }
+  const chunks = input.includes('\n\n')
+    ? input.split(/\n{2,}/)
+    : input.split(/\n/);
+  const existingIds = new Set(smsExpenses.map(e => e.id));
+  let added = 0;
+  let ignored = 0;
+  let duplicate = 0;
+
+  chunks.map(c => c.trim()).filter(Boolean).forEach(chunk => {
+    const amounts = getAmounts(chunk);
+    if(!amounts.length || !isExpenseMessage(chunk)){ ignored++; return; }
+    const amount = amounts[0];
+    const id = hashText(normalizeDigits(chunk).toLowerCase());
+    if(existingIds.has(id)){ duplicate++; return; }
+    existingIds.add(id);
+    smsExpenses.unshift({
+      id,
+      amount,
+      merchant: guessMerchant(chunk),
+      category: guessCategory(chunk),
+      date: guessDate(chunk),
+      source: chunk
+    });
+    added++;
+  });
+
+  localStorage.setItem('sgo_sms_exp', JSON.stringify(smsExpenses));
+  renderSmsExpenses({added, ignored, duplicate});
+  calc();
+}
+
+function delSmsExpense(id){
+  smsExpenses = smsExpenses.filter(e => e.id !== id);
+  localStorage.setItem('sgo_sms_exp', JSON.stringify(smsExpenses));
+  renderSmsExpenses();
+  calc();
+}
+
+function clearSmsExpenses(){
+  if(!smsExpenses.length) return;
+  if(confirm('مسح كل مصروفات الرسائل؟')){
+    smsExpenses = [];
+    localStorage.setItem('sgo_sms_exp', JSON.stringify(smsExpenses));
+    renderSmsExpenses();
+    calc();
+  }
+}
+
+function renderSmsExpenses(info){
+  document.getElementById('sms-total').textContent = money(totalSmsExpenses());
+  document.getElementById('sms-count').textContent = smsExpenses.length.toLocaleString('ar-SA');
+  const box = document.getElementById('sms-result');
+  const infoHtml = info ? `<div class="summary-bar ok" style="margin-bottom:12px"><span>تمت إضافة ${info.added} عملية · تجاهل ${info.ignored} · مكرر ${info.duplicate}</span></div>` : '';
+  if(!smsExpenses.length){
+    box.innerHTML = infoHtml + `<div class="empty"><i class="ti ti-message-2-dollar"></i><p>لا توجد مصروفات مستخرجة بعد<br>الصق الرسائل واضغط تحليل الرسائل</p></div>`;
+    return;
+  }
+  box.innerHTML = infoHtml + `<div class="card">
+    <div class="card-title"><i class="ti ti-receipt-2"></i> العمليات المحسوبة <span class="count">${money(totalSmsExpenses())}</span></div>
+    ${smsExpenses.map(e => `<div class="ob-item">
+      <div>
+        <div class="ob-name">${escapeHtml(e.merchant)}</div>
+        <span class="ob-tag x">${escapeHtml(e.category)}</span>
+        <div class="ob-note">${e.date ? escapeHtml(e.date) + ' · ' : ''}${escapeHtml(e.source).slice(0, 90)}</div>
+      </div>
+      <div class="ob-actions">
+        <div class="ob-right">${money(e.amount)}</div>
+        <button class="icon-btn" onclick="delSmsExpense('${e.id}')" aria-label="حذف" style="color:#C0392B;border-color:#FDECEA"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function openLtModal(idx=-1){
+  ltEditIdx = idx;
+  if(idx >= 0){
+    const o = longterms[idx];
+    document.getElementById('lt-name').value = o.name;
+    document.getElementById('lt-total').value = o.total;
+    document.getElementById('lt-paid').value = o.paid;
+    document.getElementById('lt-note').value = o.note || '';
+  } else {
+    document.getElementById('lt-name').value = '';
+    document.getElementById('lt-total').value = '';
+    document.getElementById('lt-paid').value = '';
+    document.getElementById('lt-note').value = '';
+  }
+  updateLtPreview();
+  document.getElementById('lt-modal').classList.add('open');
+}
+
+function closeLtModal(){
+  document.getElementById('lt-modal').classList.remove('open');
+}
+
+function updateLtPreview(){
+  const total = parseFloat(document.getElementById('lt-total').value) || 0;
+  const paid = parseFloat(document.getElementById('lt-paid').value) || 0;
+  const preview = document.getElementById('lt-preview');
+  if(total > 0){
+    const pct = Math.min(Math.round(Math.max(paid, 0) / total * 100), 100);
+    const remaining = Math.max(total - paid, 0);
+    preview.style.display = 'block';
+    document.getElementById('lt-pct-label').textContent = pct + '%';
+    document.getElementById('lt-pct-bar').style.width = pct + '%';
+    document.getElementById('lt-remaining-label').textContent = money(remaining);
+  } else {
+    preview.style.display = 'none';
+  }
+}
+
+function saveLt(){
+  const name = document.getElementById('lt-name').value.trim();
+  const total = parseFloat(document.getElementById('lt-total').value) || 0;
+  const paid = parseFloat(document.getElementById('lt-paid').value) || 0;
+  const note = document.getElementById('lt-note').value.trim();
+  if(!name || !total){ alert('الرجاء إدخال اسم الالتزام والمبلغ الكلي'); return; }
+  const ob = {name, total, paid: Math.max(paid, 0), note};
+  if(ltEditIdx >= 0) longterms[ltEditIdx] = ob;
+  else longterms.push(ob);
+  localStorage.setItem('sgo_lt', JSON.stringify(longterms));
+  closeLtModal();
+  renderLt();
+}
+
+function delLt(i){
+  if(confirm('حذف "'+longterms[i].name+'"؟')){
+    longterms.splice(i,1);
+    localStorage.setItem('sgo_lt', JSON.stringify(longterms));
+    renderLt();
+  }
+}
+
+function renderLt(){
+  const list = document.getElementById('lt-list');
+  if(!longterms.length){
+    list.innerHTML = `<div class="empty"><i class="ti ti-calendar-time"></i><p>لا توجد التزامات طويلة الأمد بعد<br>اضغط + لإضافة أول التزام</p></div>`;
+    return;
+  }
+  const remainingTotal = totalLongTermRemaining();
+  const paidTotal = totalLongTermPaid();
+  list.innerHTML = `<div class="card">
+    <div class="card-title"><i class="ti ti-calendar-time" style="color:#1565C0"></i> الالتزامات طويلة الأمد <span class="count">متبقي ${money(remainingTotal)}</span></div>
+    <div class="metric-grid" style="margin-bottom:8px">
+      <div class="metric"><div class="lbl">إجمالي المدفوع</div><div class="val green">${money(paidTotal)}</div></div>
+      <div class="metric"><div class="lbl">إجمالي المتبقي</div><div class="val red">${money(remainingTotal)}</div></div>
+    </div>
+    ${longterms.map((o,i) => {
+      const total = Number(o.total || 0);
+      const paid = Number(o.paid || 0);
+      const pct = total > 0 ? Math.min(Math.round(paid / total * 100), 100) : 0;
+      const remaining = Math.max(total - paid, 0);
+      return `<div class="lt-item">
+        <div class="lt-header">
+          <div>
+            <div class="lt-name">${escapeHtml(o.name)}</div>
+            ${o.note ? `<div class="lt-note">${escapeHtml(o.note)}</div>` : ''}
+          </div>
+          <div class="lt-actions">
+            <span class="lt-badge">${pct}%</span>
+            <button class="icon-btn" onclick="openLtModal(${i})" aria-label="تعديل"><i class="ti ti-edit"></i></button>
+            <button class="icon-btn" onclick="delLt(${i})" aria-label="حذف" style="color:#C0392B;border-color:#FDECEA"><i class="ti ti-trash"></i></button>
+          </div>
+        </div>
+        <div class="lt-progress-bar"><div class="lt-progress-fill" style="width:${pct}%"></div></div>
+        <div class="lt-footer">
+          <span>المدفوع: <strong style="color:#0F6E56">${money(paid)}</strong></span>
+          <span>المتبقي: <strong style="color:#C0392B">${money(remaining)}</strong></span>
+          <span>المبلغ الكلي: <strong>${money(total)}</strong></span>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function planSplits(){
+  const totals = calc();
+  const base = Math.max(totals.surplus, 0);
+  return {
+    surplus: totals.surplus,
+    base,
+    emergency: base * 0.20,
+    periodic: base * 0.30,
+    invest: base * 0.50
+  };
+}
+
+function renderPlan(){
+  const p = planSplits();
+  const bar = document.getElementById('plan-summary-bar');
+  if(p.surplus <= 0){
+    bar.innerHTML = `<div class="summary-bar bad"><span>لا يوجد فائض هذا الشهر للتوزيع</span><strong>${money(p.surplus)}</strong></div>`;
+  } else {
+    bar.innerHTML = `<div class="summary-bar ok"><span>الفائض القابل للتوزيع هذا الشهر</span><strong>${money(p.base)}</strong></div>`;
+  }
+  const cards = document.getElementById('plan-cards');
+  cards.innerHTML = `
+    <div class="card">
+      <div class="card-title"><i class="ti ti-shield-check" style="color:#C0392B"></i> مبلغ الطوارئ <span class="count">20%</span></div>
+      <div class="metric-grid" style="margin-bottom:10px">
+        <div class="metric"><div class="lbl">الحصة الشهرية</div><div class="val red">${money(p.emergency)}</div></div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:20%;background:#E74C3C"></div></div>
+      <div class="tip" style="margin-top:10px">يوضع في حساب سريع السحب يعطي عائدًا، بحيث يكون جاهز لحظة الحاجة. التفاصيل في تبويب "النصائح".</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-calendar-repeat" style="color:#E67E22"></i> مصاريف دورية <span class="count">30%</span></div>
+      <div class="metric-grid" style="margin-bottom:10px">
+        <div class="metric"><div class="lbl">الحصة الشهرية</div><div class="val amber">${money(p.periodic)}</div></div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:30%;background:#E67E22"></div></div>
+      <div class="tip" style="margin-top:10px">مخصص للمصاريف المعروف موعدها مسبقًا، بحيث تُجدول سحبها قبل الاستحقاق. التفاصيل في تبويب "النصائح".</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-trending-up" style="color:#0F6E56"></i> استثمار وادخار <span class="count">50%</span></div>
+      <div class="metric-grid" style="margin-bottom:10px">
+        <div class="metric"><div class="lbl">الحصة الشهرية</div><div class="val green">${money(p.invest)}</div></div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:50%;background:#1D9E75"></div></div>
+      <div class="tip" style="margin-top:10px">أكبر حصة، موجهة للنمو على المدى المتوسط والطويل. التفاصيل في تبويب "النصائح".</div>
+    </div>`;
+}
+
+function renderTips(){
+  const p = planSplits();
+  document.getElementById('tips-cards').innerHTML = `
+    <div class="card">
+      <div class="card-title"><i class="ti ti-shield-check" style="color:#C0392B"></i> مبلغ الطوارئ <span class="count">${money(p.emergency)}/شهر</span></div>
+      <p class="parser-note" style="margin-bottom:6px">يوضع في حساب ادخاري يعطي عائدًا على الرصيد مع إمكانية سحب سريع لحظة الحاجة.</p>
+      <div class="ob-item">
+        <div>
+          <div class="ob-name">حساب "حصاد" – مصرف الراجحي</div>
+          <div class="ob-note">يعطي عائدًا/ربحًا دوريًا على الرصيد، وميزته الأساسية سرعة السحب وقت الطوارئ الفعلية.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-calendar-repeat" style="color:#E67E22"></i> مصاريف دورية <span class="count">${money(p.periodic)}/شهر</span></div>
+      <p class="parser-note" style="margin-bottom:6px">هذه المصاريف معروف موعدها مسبقًا (فواتير، اشتراكات، أقساط دورية...)، لذلك يمكن جدولة تحويلها أو سحبها قبل موعد الاستحقاق مباشرة بدل تركها في الحساب الجاري.</div>
+      <div class="ob-item">
+        <div>
+          <div class="ob-name">منصة ملاءة – محفظة الكاش باك</div>
+          <div class="ob-note">تجميع المبلغ فيها ثم جدولة السحب قبل موعد كل مصروف دوري بيوم أو يومين.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-trending-up" style="color:#0F6E56"></i> استثمار وادخار <span class="count">${money(p.invest)}/شهر</span></div>
+      <p class="parser-note" style="margin-bottom:6px">أكبر حصة من الفائض، موجهة لأدوات نمو على المدى المتوسط والطويل بدل بقائها بلا عائد.</p>
+      <div class="ob-item">
+        <div>
+          <div class="ob-name">الأسهم (استثمار مباشر)</div>
+          <div class="ob-note">شراء أسهم مباشرة حسب متابعتك واستراتيجيتك الخاصة.</div>
+        </div>
+      </div>
+      <div class="ob-item">
+        <div>
+          <div class="ob-name">منصة ثمار – المحفظة الواعدة</div>
+          <div class="ob-note">محفظة تركّز على النمو، ضمن ما تتابعه من أداء المحفظة.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="license-note">هذه ملاحظات شخصية للتذكير أين اعتدت توجّه كل حصة من فائضك، وليست توصية استثمارية من التطبيق. العوائد وشروط كل منصة قابلة للتغيير، فراجعها قبل أي تحويل.</div>`;
+}
+
+function renderSummary(){
+  const {net, expenses, surplus} = calc();
+  const totalOb = totalObligations();
+  const debtOb = obligations.filter(o => o.type==='d').reduce((s,o) => s+Number(o.amount || 0), 0);
+  const fixedOb = obligations.filter(o => o.type==='s').reduce((s,o) => s+Number(o.amount || 0), 0);
+  const billOb = obligations.filter(o => o.type==='e').reduce((s,o) => s+Number(o.amount || 0), 0);
+  const ltRemaining = totalLongTermRemaining();
+  const ltPaid = totalLongTermPaid();
+  const totalOut = totalOb + expenses;
+  const outPct = net > 0 ? Math.min(Math.round(totalOut/net*100), 100) : 0;
+  const debtPct = net > 0 ? Math.min(Math.round(debtOb/net*100), 100) : 0;
+  const expPct = net > 0 ? Math.min(Math.round(expenses/net*100), 100) : 0;
+  const surplusPct = net > 0 ? Math.max(100 - outPct, 0) : 0;
+  const status = surplus < 0 ? 'bad' : outPct > 80 ? 'warn' : 'ok';
+  const statusText = surplus < 0 ? 'المصروفات أعلى من الدخل'
+                   : outPct > 80 ? 'الفائض منخفض ويحتاج متابعة'
+                   : 'وضعك المالي ممتاز';
+
+  document.getElementById('summary-content').innerHTML = `
+  <div class="summary-bar ${status}"><span>${statusText}</span><strong>${money(surplus)}</strong></div>
+
+  <div class="metric-grid">
+    <div class="metric"><div class="lbl">الراتب الصافي</div><div class="val green">${money(net)}</div></div>
+    <div class="metric"><div class="lbl">إجمالي الالتزامات</div><div class="val red">${money(totalOb)}</div></div>
+    <div class="metric"><div class="lbl">مصروفات الرسائل</div><div class="val blue">${money(expenses)}</div></div>
+    <div class="metric"><div class="lbl">الفائض</div><div class="val ${surplus>=0?'green':'red'}">${money(surplus)}</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-chart-bar"></i> توزيع الدخل</div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>الالتزامات الكلية</span><span style="color:#C0392B">${money(totalOb)}</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${net>0?Math.min(Math.round(totalOb/net*100),100):0}%;background:#E74C3C"></div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>مصروفات الرسائل</span><span style="color:#1565C0">${money(expenses)}</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${expPct}%;background:#1565C0"></div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>أقساط وديون</span><span style="color:#E67E22">${money(debtOb)}</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${debtPct}%;background:#E67E22"></div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>الفائض المتاح</span><span style="color:#0F6E56">${money(Math.max(surplus,0))}</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${surplusPct}%;background:#1D9E75"></div></div>
+    </div>
+  </div>
+
+  ${obligations.length ? `<div class="card">
+    <div class="card-title"><i class="ti ti-list"></i> تفصيل الالتزامات</div>
+    ${obligations.map(o => `<div class="ob-item">
+      <div>
+        <div class="ob-name">${escapeHtml(o.name)}</div>
+        <span class="ob-tag ${o.type}">${o.typeName}</span>
+      </div>
+      <div class="ob-right">${money(o.amount)}
+        <small>${net>0?Math.round(o.amount/net*100):0}% من الراتب</small>
+      </div>
+    </div>`).join('')}
+    ${debtOb>0?`<div style="padding-top:10px;font-size:13px;color:#888">منها أقساط وديون: <strong style="color:#C0392B">${money(debtOb)}</strong></div>`:''}
+    ${(fixedOb + billOb)>0?`<div style="padding-top:6px;font-size:13px;color:#888">ثابت وفواتير: <strong style="color:#1565C0">${money(fixedOb + billOb)}</strong></div>`:''}
+  </div>` : ''}
+
+  ${smsExpenses.length ? `<div class="card">
+    <div class="card-title"><i class="ti ti-message-2-dollar"></i> أعلى مصروفات الرسائل</div>
+    ${smsExpenses.slice().sort((a,b)=>b.amount-a.amount).slice(0,5).map(e => `<div class="ob-item">
+      <div>
+        <div class="ob-name">${escapeHtml(e.merchant)}</div>
+        <span class="ob-tag x">${escapeHtml(e.category)}</span>
+      </div>
+      <div class="ob-right">${money(e.amount)}</div>
+    </div>`).join('')}
+  </div>` : ''}
+
+  ${longterms.length ? `<div class="card">
+    <div class="card-title"><i class="ti ti-calendar-time" style="color:#1565C0"></i> متابعة طويلة الأمد</div>
+    <div class="metric-grid" style="margin-bottom:8px">
+      <div class="metric"><div class="lbl">المدفوع</div><div class="val green">${money(ltPaid)}</div></div>
+      <div class="metric"><div class="lbl">المتبقي</div><div class="val red">${money(ltRemaining)}</div></div>
+    </div>
+    ${longterms.slice().sort((a,b)=>(b.total-b.paid)-(a.total-a.paid)).slice(0,3).map(o => {
+      const total = Number(o.total || 0);
+      const paid = Number(o.paid || 0);
+      const pct = total > 0 ? Math.min(Math.round(paid / total * 100), 100) : 0;
+      return `<div class="progress-wrap">
+        <div class="progress-label"><span>${escapeHtml(o.name)}</span><span style="color:#1565C0">${pct}%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:#1565C0"></div></div>
+      </div>`;
+    }).join('')}
+  </div>` : ''}
+
+  <div class="tip">نصيحة: حاول تخلي الأقساط والديون أقل من 30% من الراتب الصافي، وراجع مصروفات الرسائل إذا بدأ الفائض ينخفض.</div>`;
+}
+
+function currentMonthKey(){
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+
+function monthLabel(key){
+  if(!key) return 'شهر غير محدد';
+  const parts = key.split('-').map(Number);
+  if(parts.length < 2) return key;
+  return new Date(parts[0], parts[1] - 1, 1).toLocaleDateString('ar-SA', {year:'numeric', month:'long'});
+}
+
+function buildMonthlySnapshot(month, note){
+  const totals = calc();
+  const totalOb = totalObligations();
+  const totalOut = totalOb + totals.expenses;
+  return {
+    id: month,
+    month,
+    note: note || '',
+    savedAt: new Date().toISOString(),
+    gross: totals.gross,
+    net: totals.net,
+    obligations: totalOb,
+    expenses: totals.expenses,
+    surplus: totals.surplus,
+    outflow: totalOut,
+    obligationsCount: obligations.length,
+    expensesCount: smsExpenses.length,
+    longtermRemaining: totalLongTermRemaining()
+  };
+}
+
+function saveMonthlySnapshot(){
+  const month = document.getElementById('snapshot-month').value || currentMonthKey();
+  const note = document.getElementById('snapshot-note').value.trim();
+  const snapshot = buildMonthlySnapshot(month, note);
+  const idx = monthlySnapshots.findIndex(item => item.month === month);
+  if(idx >= 0) monthlySnapshots[idx] = snapshot;
+  else monthlySnapshots.push(snapshot);
+  monthlySnapshots.sort((a,b) => String(b.month).localeCompare(String(a.month)));
+  localStorage.setItem('sgo_monthly', JSON.stringify(monthlySnapshots));
+  document.getElementById('snapshot-note').value = '';
+  renderMonthlyHistory();
+  alert('تم حفظ نسخة شهر ' + monthLabel(month));
+}
+
+function delMonthlySnapshot(month){
+  if(confirm('حذف نسخة شهر ' + monthLabel(month) + '؟')){
+    monthlySnapshots = monthlySnapshots.filter(item => item.month !== month);
+    localStorage.setItem('sgo_monthly', JSON.stringify(monthlySnapshots));
+    renderMonthlyHistory();
+  }
+}
+
+function deltaBadge(current, previous, reverseGood=false){
+  if(!previous) return '';
+  const diff = Number(current || 0) - Number(previous || 0);
+  if(diff === 0) return '<span class="delta good">بدون تغيير</span>';
+  const good = reverseGood ? diff < 0 : diff > 0;
+  const sign = diff > 0 ? '+' : '';
+  return `<span class="delta ${good?'good':'bad'}">${sign}${money(diff)}</span>`;
+}
+
+function renderMonthlyHistory(){
+  const box = document.getElementById('history-content');
+  if(!box) return;
+  if(!monthlySnapshots.length){
+    box.innerHTML = `<div class="empty"><i class="ti ti-chart-bar"></i><p>لا توجد أشهر محفوظة بعد<br>احفظ لقطة هذا الشهر لتبدأ المقارنة</p></div>`;
+    return;
+  }
+  const sorted = monthlySnapshots.slice().sort((a,b) => String(b.month).localeCompare(String(a.month)));
+  box.innerHTML = `<div class="card">
+    <div class="card-title"><i class="ti ti-chart-bar"></i> سجل الأشهر <span class="count">${sorted.length.toLocaleString('ar-SA')} شهر</span></div>
+    ${sorted.map((item, index) => {
+      const prev = sorted[index + 1];
+      return `<div class="history-item">
+        <div class="history-head">
+          <div>
+            <div class="history-month">${monthLabel(item.month)}</div>
+            <div class="history-note">${item.note ? escapeHtml(item.note) : 'تم الحفظ: ' + new Date(item.savedAt).toLocaleDateString('ar-SA')}</div>
+          </div>
+          <button class="icon-btn" onclick="delMonthlySnapshot('${item.month}')" aria-label="حذف" style="color:#C0392B;border-color:#FDECEA"><i class="ti ti-trash"></i></button>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-metric"><span>الدخل الصافي</span><b>${money(item.net)}</b></div>
+          <div class="mini-metric"><span>الصرف</span><b>${money(item.expenses)}</b></div>
+          <div class="mini-metric"><span>الفائض</span><b>${money(item.surplus)}</b></div>
+        </div>
+        ${prev ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:9px">
+          ${deltaBadge(item.expenses, prev.expenses, true)}
+          ${deltaBadge(item.surplus, prev.surplus, false)}
+        </div>` : ''}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function setTheme(theme, persist=true){
+  const themes = ['green','blue','purple','gold'];
+  if(!themes.includes(theme)) theme = 'green';
+  document.body.classList.remove('theme-blue','theme-purple','theme-gold');
+  if(theme !== 'green') document.body.classList.add('theme-' + theme);
+  document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.theme === theme));
+  currentTheme = theme;
+  if(persist) localStorage.setItem('sgo_theme', theme);
+}
+
+function showWelcome(){
+  if(localStorage.getItem('sgo_welcome_seen') === '1') return;
+  const modal = document.getElementById('welcome-modal');
+  if(modal) modal.classList.add('open');
+}
+
+function closeWelcome(){
+  localStorage.setItem('sgo_welcome_seen', '1');
+  const modal = document.getElementById('welcome-modal');
+  if(modal) modal.classList.remove('open');
+}
+
+function backupPayload(){
+  return {
+    app: 'mudar_plus',
+    version: '2.0.0',
+    exportedAt: new Date().toISOString(),
+    salaryData,
+    obligations,
+    smsExpenses,
+    longterms,
+    monthlySnapshots,
+    theme: currentTheme
+  };
+}
+
+function exportBackup(){
+  saveSalary();
+  const blob = new Blob([JSON.stringify(backupPayload(), null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'salary-backup-' + currentMonthKey() + '.json';
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function importBackup(event){
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(){
+    try{
+      const data = JSON.parse(reader.result);
+      if(!confirm('استرجاع النسخة سيستبدل البيانات الحالية. هل تريد المتابعة؟')) return;
+      salaryData = data.salaryData || {};
+      obligations = Array.isArray(data.obligations) ? data.obligations : [];
+      smsExpenses = Array.isArray(data.smsExpenses) ? data.smsExpenses : [];
+      longterms = Array.isArray(data.longterms) ? data.longterms : [];
+      monthlySnapshots = Array.isArray(data.monthlySnapshots) ? data.monthlySnapshots : [];
+      currentTheme = data.theme || 'green';
+      localStorage.setItem('sgo_sal', JSON.stringify(salaryData));
+      localStorage.setItem('sgo_ob', JSON.stringify(obligations));
+      localStorage.setItem('sgo_sms_exp', JSON.stringify(smsExpenses));
+      localStorage.setItem('sgo_lt', JSON.stringify(longterms));
+      localStorage.setItem('sgo_monthly', JSON.stringify(monthlySnapshots));
+      localStorage.setItem('sgo_theme', currentTheme);
+      location.reload();
+    } catch(error){
+      alert('تعذر قراءة ملف النسخة الاحتياطية');
+    } finally {
+      event.target.value = '';
+    }
+  };
+  reader.readAsText(file);
+}
+
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+
+document.getElementById('modal').addEventListener('click', function(e){
+  if(e.target === this) closeModal();
+});
+document.getElementById('lt-modal').addEventListener('click', function(e){
+  if(e.target === this) closeLtModal();
+});
+
+calc();
+renderOb();
+renderSmsExpenses();
+renderLt();
+</script>
+</body>
+</html>
