@@ -607,12 +607,12 @@ function setupPwaAssets(){
 
 setupPwaAssets();
 
-let obligations = JSON.parse(localStorage.getItem('sgo_ob') || '[]');
-let salaryData = JSON.parse(localStorage.getItem('sgo_sal') || '{}');
-let smsExpenses = JSON.parse(localStorage.getItem('sgo_sms_exp') || '[]');
-let longterms = JSON.parse(localStorage.getItem('sgo_lt') || '[]');
-let monthlySnapshots = JSON.parse(localStorage.getItem('sgo_monthly') || '[]');
-let currentTheme = localStorage.getItem('sgo_theme') || 'green';
+let obligations = JSON.parse(localStorage.getItem('mdp_ob') || '[]');
+let salaryData = JSON.parse(localStorage.getItem('mdp_sal') || '{}');
+let smsExpenses = JSON.parse(localStorage.getItem('mdp_sms_exp') || '[]');
+let longterms = JSON.parse(localStorage.getItem('mdp_lt') || '[]');
+let monthlySnapshots = JSON.parse(localStorage.getItem('mdp_monthly') || '[]');
+let currentTheme = localStorage.getItem('mdp_theme') || 'green';
 let editIdx = -1;
 let ltEditIdx = -1;
 let selTypeVal = 'd';
@@ -635,7 +635,7 @@ function saveSalary(){
   const fields = ['base','housing','transport','comms','other_allow','gosi','other_ded','overtime','bonus'];
   const d = {};
   fields.forEach(f => d[f] = document.getElementById(f).value);
-  localStorage.setItem('sgo_sal', JSON.stringify(d));
+  localStorage.setItem('mdp_sal', JSON.stringify(d));
 }
 
 function switchTab(t){
@@ -713,7 +713,7 @@ function saveOb(){
   const ob = {name, amount, type: selTypeVal, typeName: typeNames[selTypeVal]};
   if(editIdx >= 0) obligations[editIdx] = ob;
   else obligations.push(ob);
-  localStorage.setItem('sgo_ob', JSON.stringify(obligations));
+  localStorage.setItem('mdp_ob', JSON.stringify(obligations));
   closeModal();
   renderOb();
   calc();
@@ -722,7 +722,7 @@ function saveOb(){
 function delOb(i){
   if(confirm('حذف "'+obligations[i].name+'"؟')){
     obligations.splice(i,1);
-    localStorage.setItem('sgo_ob', JSON.stringify(obligations));
+    localStorage.setItem('mdp_ob', JSON.stringify(obligations));
     renderOb();
     calc();
   }
@@ -858,14 +858,14 @@ function importSmsExpenses(){
     added++;
   });
 
-  localStorage.setItem('sgo_sms_exp', JSON.stringify(smsExpenses));
+  localStorage.setItem('mdp_sms_exp', JSON.stringify(smsExpenses));
   renderSmsExpenses({added, ignored, duplicate});
   calc();
 }
 
 function delSmsExpense(id){
   smsExpenses = smsExpenses.filter(e => e.id !== id);
-  localStorage.setItem('sgo_sms_exp', JSON.stringify(smsExpenses));
+  localStorage.setItem('mdp_sms_exp', JSON.stringify(smsExpenses));
   renderSmsExpenses();
   calc();
 }
@@ -874,7 +874,7 @@ function clearSmsExpenses(){
   if(!smsExpenses.length) return;
   if(confirm('مسح كل مصروفات الرسائل؟')){
     smsExpenses = [];
-    localStorage.setItem('sgo_sms_exp', JSON.stringify(smsExpenses));
+    localStorage.setItem('mdp_sms_exp', JSON.stringify(smsExpenses));
     renderSmsExpenses();
     calc();
   }
@@ -952,7 +952,7 @@ function saveLt(){
   const ob = {name, total, paid: Math.max(paid, 0), note};
   if(ltEditIdx >= 0) longterms[ltEditIdx] = ob;
   else longterms.push(ob);
-  localStorage.setItem('sgo_lt', JSON.stringify(longterms));
+  localStorage.setItem('mdp_lt', JSON.stringify(longterms));
   closeLtModal();
   renderLt();
 }
@@ -960,7 +960,7 @@ function saveLt(){
 function delLt(i){
   if(confirm('حذف "'+longterms[i].name+'"؟')){
     longterms.splice(i,1);
-    localStorage.setItem('sgo_lt', JSON.stringify(longterms));
+    localStorage.setItem('mdp_lt', JSON.stringify(longterms));
     renderLt();
   }
 }
@@ -1235,7 +1235,7 @@ function saveMonthlySnapshot(){
   if(idx >= 0) monthlySnapshots[idx] = snapshot;
   else monthlySnapshots.push(snapshot);
   monthlySnapshots.sort((a,b) => String(b.month).localeCompare(String(a.month)));
-  localStorage.setItem('sgo_monthly', JSON.stringify(monthlySnapshots));
+  localStorage.setItem('mdp_monthly', JSON.stringify(monthlySnapshots));
   document.getElementById('snapshot-note').value = '';
   renderMonthlyHistory();
   alert('تم حفظ نسخة شهر ' + monthLabel(month));
@@ -1244,7 +1244,7 @@ function saveMonthlySnapshot(){
 function delMonthlySnapshot(month){
   if(confirm('حذف نسخة شهر ' + monthLabel(month) + '؟')){
     monthlySnapshots = monthlySnapshots.filter(item => item.month !== month);
-    localStorage.setItem('sgo_monthly', JSON.stringify(monthlySnapshots));
+    localStorage.setItem('mdp_monthly', JSON.stringify(monthlySnapshots));
     renderMonthlyHistory();
   }
 }
@@ -1280,11 +1280,11 @@ function renderMonthlyHistory(){
         </div>
         <div class="mini-grid">
           <div class="mini-metric"><span>الدخل الصافي</span><b>${money(item.net)}</b></div>
-          <div class="mini-metric"><span>الصرف</span><b>${money(item.expenses)}</b></div>
+          <div class="mini-metric"><span>الصرف (الالتزامات)</span><b>${money(item.obligations)}</b></div>
           <div class="mini-metric"><span>الفائض</span><b>${money(item.surplus)}</b></div>
         </div>
         ${prev ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:9px">
-          ${deltaBadge(item.expenses, prev.expenses, true)}
+          ${deltaBadge(item.obligations, prev.obligations, true)}
           ${deltaBadge(item.surplus, prev.surplus, false)}
         </div>` : ''}
       </div>`;
@@ -1299,17 +1299,17 @@ function setTheme(theme, persist=true){
   if(theme !== 'green') document.body.classList.add('theme-' + theme);
   document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.theme === theme));
   currentTheme = theme;
-  if(persist) localStorage.setItem('sgo_theme', theme);
+  if(persist) localStorage.setItem('mdp_theme', theme);
 }
 
 function showWelcome(){
-  if(localStorage.getItem('sgo_welcome_seen') === '1') return;
+  if(localStorage.getItem('mdp_welcome_seen') === '1') return;
   const modal = document.getElementById('welcome-modal');
   if(modal) modal.classList.add('open');
 }
 
 function closeWelcome(){
-  localStorage.setItem('sgo_welcome_seen', '1');
+  localStorage.setItem('mdp_welcome_seen', '1');
   const modal = document.getElementById('welcome-modal');
   if(modal) modal.classList.remove('open');
 }
@@ -1353,12 +1353,12 @@ function importBackup(event){
       longterms = Array.isArray(data.longterms) ? data.longterms : [];
       monthlySnapshots = Array.isArray(data.monthlySnapshots) ? data.monthlySnapshots : [];
       currentTheme = data.theme || 'green';
-      localStorage.setItem('sgo_sal', JSON.stringify(salaryData));
-      localStorage.setItem('sgo_ob', JSON.stringify(obligations));
-      localStorage.setItem('sgo_sms_exp', JSON.stringify(smsExpenses));
-      localStorage.setItem('sgo_lt', JSON.stringify(longterms));
-      localStorage.setItem('sgo_monthly', JSON.stringify(monthlySnapshots));
-      localStorage.setItem('sgo_theme', currentTheme);
+      localStorage.setItem('mdp_sal', JSON.stringify(salaryData));
+      localStorage.setItem('mdp_ob', JSON.stringify(obligations));
+      localStorage.setItem('mdp_sms_exp', JSON.stringify(smsExpenses));
+      localStorage.setItem('mdp_lt', JSON.stringify(longterms));
+      localStorage.setItem('mdp_monthly', JSON.stringify(monthlySnapshots));
+      localStorage.setItem('mdp_theme', currentTheme);
       location.reload();
     } catch(error){
       alert('تعذر قراءة ملف النسخة الاحتياطية');
